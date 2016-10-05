@@ -201,36 +201,61 @@ def str_to_elem(s):
 def build_graph(num, graph = {}):
 
     if graph == {}:
-    	graph = {elem_to_str(iden):{}}
+    	graph = {elem_to_str(iden):{"name": ""}}
     sz = 0
     while sz < num:
         for elem in graph.keys():
-            if graph[elem] == {}:
+            if 'a' not in graph[elem]:
                 sz += 1
                 elem_t = str_to_elem(elem)
-
-                graph[elem]['A'] = elem_to_str(op(elem_t, str_to_elem(elem_to_str(A))))
+                # Bit of a mix up. The variable A is the generator a
+                #                               A_inv is the inverse of a
+                # etc
+                graph[elem]['a'] = elem_to_str(op(elem_t, str_to_elem(elem_to_str(A))))
                 elem_t = str_to_elem(elem)
-                graph[elem]['A_inv'] = elem_to_str(op(elem_t, str_to_elem(elem_to_str(A_inv))))
+                graph[elem]['A'] = elem_to_str(op(elem_t, str_to_elem(elem_to_str(A_inv))))
                 elem_t = str_to_elem(elem)
-                graph[elem]['B'] = elem_to_str(op(elem_t, str_to_elem(elem_to_str(B))))
+                graph[elem]['b'] = elem_to_str(op(elem_t, str_to_elem(elem_to_str(B))))
                 elem_t = str_to_elem(elem)
-                graph[elem]['B_inv'] = elem_to_str(op(elem_t, str_to_elem(elem_to_str(B_inv))))
-
-                graph[graph[elem]['A']] = {}
-                graph[graph[elem]['A_inv']] = {}
-                graph[graph[elem]['B_inv']] = {}
-                graph[graph[elem]['B']] = {}
+                graph[elem]['B'] = elem_to_str(op(elem_t, str_to_elem(elem_to_str(B_inv))))
+                if graph[elem]['a'] not in graph:
+                    graph[graph[elem]['a']] = {'name': graph[elem]["name"] + 'a'}
+                if graph[elem]['A'] not in graph:
+                    graph[graph[elem]['A']] = {'name': graph[elem]["name"] + 'A'}
+                if graph[elem]['B'] not in graph:
+                    graph[graph[elem]['B']] =  {'name': graph[elem]["name"] + 'B'}
+                if graph[elem]['b'] not in graph:
+                    graph[graph[elem]['b']] = {'name': graph[elem]["name"] + 'b'}
     return graph
 
 
-graph = build_graph(300)
+graph = build_graph(25)
 j = 0
-for k in graph:
-   v = graph[k]
-   if v != {}:
+ls = []
+
+
+
+for key in graph:
+   v = graph[key]
+   rt = ""
+   if 'a' in v:
       j += 1
-      print(k)
+      print(v["name"])
       for k in v:
-          print("   " + str((k, v[k])))
+          if k != "name":
+              s  = str((k, graph[v[k]]["name"]))
+              print("    " + s)
+              rt += s
+              rt += "\n"
+   ls.append((v["name"], rt))
 print(j)
+print("\n\n\n\n\n")
+ls.sort(key=lambda (a,b): a)
+
+for (a,b) in ls:
+   if b != "":
+       if a == "":
+           print("ID")
+       else:
+           print(a)
+       print(b)
