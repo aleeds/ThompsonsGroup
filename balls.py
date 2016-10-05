@@ -229,29 +229,85 @@ def build_graph(num, graph = {}):
     return graph
 
 
-graph = build_graph(25)
+graph = build_graph(350)
 j = 0
-ls = []
+grph2 = {}
+
+def swap_case(name):
+   return ''.join(c.lower() if c.isupper() else c.upper() for c in name) 
+
+import networkx as nx
+import matplotlib
+matplotlib.use("agg")
+import matplotlib.pyplot as plt
+f = plt.figure()
+G = nx.DiGraph()
 
 
+dct_elem_to_num = {}
+i = 0
+for key in graph:
+       name = graph[key]["name"]
+       # changed that to name to make it easier, don't need to fiddle
+       dct_elem_to_num[name] = name
+       i += 1
+       G.add_node(dct_elem_to_num[name])
+       print(graph[key]["name"])
 
+a_edges = []
+b_edges = []
 for key in graph:
    v = graph[key]
-   rt = ""
+
    if 'a' in v:
+      rt = {"edges":[]}
       j += 1
-      print(v["name"])
+      #print(v["name"])
+      name = v["name"]
+      num = dct_elem_to_num[name]
       for k in v:
           if k != "name":
+              other_num = dct_elem_to_num[graph[v[k]]["name"]]
+              print((num, other_num))
+              G.add_edges_from([(num, other_num)])
+              if k == 'a' or k == 'A':
+                  a_edges.append((num, other_num))
+              else:
+                  b_edges.append((num, other_num))
+              rt["edges"].append(graph[v[k]]["name"])
+              rt[k] = graph[v[k]]["name"]
               s  = str((k, graph[v[k]]["name"]))
-              print("    " + s)
-              rt += s
-              rt += "\n"
-   ls.append((v["name"], rt))
-print(j)
-print("\n\n\n\n\n")
-ls.sort(key=lambda (a,b): a)
+              #print("    " + s)
+   
+      grph2[v["name"]] = rt
 
+def pos_free(pos):
+    def position_item(item):
+        base = [.5, .5]
+        c = .25
+        for s in item:
+            chn = {'a':[0,c], 'A':[0, -c], 'b':[c, 0], 'B':[-c, 0]}
+            base[0] += chn[s][0]
+            base[1] += chn[s][1]
+            c = c / 2
+        return base
+    for key in pos:
+        pos[key] =  position_item(key)
+    return pos
+                      
+
+def draw_graph():
+#    pos = {"":(0,0), "a":(1,0), "b":(0,1)}
+    pos = nx.spring_layout(G)
+    pos = pos_free(pos)
+    nx.draw_networkx_nodes(G, pos, node_size=0, width=.1)
+    nx.draw_networkx_edges(G, pos, edgelist=a_edges, edge_color='r', arrows=True, width=.1)
+    nx.draw_networkx_edges(G, pos, edgelist=b_edges, edge_color='b', arrows=True, width=.1)
+    #nx.draw_spring(G, ax=f.add_subplot(111), node_size=100, widths=1, arrows = True)
+    f.savefig("graph.png", dpi=2000)
+
+draw_graph()
+"""
 for (a,b) in ls:
    if b != "":
        if a == "":
@@ -259,3 +315,4 @@ for (a,b) in ls:
        else:
            print(a)
        print(b)
+"""
