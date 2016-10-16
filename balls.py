@@ -199,7 +199,8 @@ def str_to_elem(s):
 
 
 def build_graph(num, graph = {}):
-
+    import json
+    js = {}
     if graph == {}:
     	graph = {elem_to_str(iden):{"name": ""}}
     sz = 0
@@ -218,6 +219,10 @@ def build_graph(num, graph = {}):
                 graph[elem]['b'] = elem_to_str(op(elem_t, str_to_elem(elem_to_str(B))))
                 elem_t = str_to_elem(elem)
                 graph[elem]['B'] = elem_to_str(op(elem_t, str_to_elem(elem_to_str(B_inv))))
+
+                def handle_gen(gen):
+			if graph[elem][gen] not in graph:
+			    graph[graph[elem][gen]] = {'name': graph[elem]["name"] + gen}
                 if graph[elem]['a'] not in graph:
                     graph[graph[elem]['a']] = {'name': graph[elem]["name"] + 'a'}
                 if graph[elem]['A'] not in graph:
@@ -229,7 +234,7 @@ def build_graph(num, graph = {}):
     return graph
 
 
-graph = build_graph(350)
+graph = build_graph(100)
 j = 0
 grph2 = {}
 
@@ -254,6 +259,7 @@ for key in graph:
        G.add_node(dct_elem_to_num[name])
        print(graph[key]["name"])
 
+
 a_edges = []
 b_edges = []
 for key in graph:
@@ -264,6 +270,7 @@ for key in graph:
       j += 1
       #print(v["name"])
       name = v["name"]
+      print(name)
       num = dct_elem_to_num[name]
       for k in v:
           if k != "name":
@@ -281,8 +288,8 @@ for key in graph:
    
       grph2[v["name"]] = rt
 
-def pos_free(pos):
-    def position_item(item):
+
+def position_item(item):
         base = [.5, .5]
         c = .25
         for s in item:
@@ -291,22 +298,66 @@ def pos_free(pos):
             base[1] += chn[s][1]
             c = c / 2
         return base
+
+def pos_free(pos):
+
     for key in pos:
         pos[key] =  position_item(key)
     return pos
-                      
+
+
+import random
+from math import sin
+from math import cos
+from math import sqrt
+from math import pi
+def concentric_circles(pos):
+    ordered = sorted(pos.keys(), key=lambda a: len(a))
+    def distance_special(p, inner_edge, pos):
+        d = 0
+        for n in inner_edge:
+            np = pos[n]
+            x = (p[0] - np[0]) 
+            y = (p[1] - np[1])
+            d += x * x + y * y
+        return d
+    for a in ordered:
+          print(a)
+          base = [.5, .5]
+          inner_edge = [e for e in G[a] if len(e) < len(a)]
+          print(inner_edge)
+          t = 250
+          r = random.uniform(0,2 * pi)
+          m = len(a) * len(a) * len(a)
+          p = [base[0] + sin(r) * m, base[1] + cos(r) * m]
+          d = distance_special(p, inner_edge, pos)
+
+          while len(inner_edge) > 0 and t > 0:
+               t += -1
+               r = random.randint(0,100000)
+               n_p = [base[0] + sin(r) * m, base[1] + cos(r) * m]
+               dt = distance_special(n_p, inner_edge, pos)
+               if dt < d:
+                   d = dt
+                   p = n_p
+          pos[a] = p
+          if len(a) <= 3:
+              pos[a] = position_item(a)         
+    return pos
 
 def draw_graph():
 #    pos = {"":(0,0), "a":(1,0), "b":(0,1)}
     pos = nx.spring_layout(G)
-    pos = pos_free(pos)
-    nx.draw_networkx_nodes(G, pos, node_size=0, width=.1)
-    nx.draw_networkx_edges(G, pos, edgelist=a_edges, edge_color='r', arrows=True, width=.1)
-    nx.draw_networkx_edges(G, pos, edgelist=b_edges, edge_color='b', arrows=True, width=.1)
-    #nx.draw_spring(G, ax=f.add_subplot(111), node_size=100, widths=1, arrows = True)
-    f.savefig("graph.png", dpi=2000)
+    #pos = pos_free(pos)
+    for i in range(1,7):
+        pos = concentric_circles(pos)
+        nx.draw_networkx_nodes(G, pos, node_size=0, width=.1, nodes=[n for n in pos.keys() if len(n) <= i])
+        nx.draw_networkx_edges(G, pos, edgelist=a_edges, edge_color='r', arrows=True, width=.1)
+        nx.draw_networkx_edges(G, pos, edgelist=b_edges, edge_color='b', arrows=True, width=.1)
+        #nx.draw_spring(G, ax=f.add_subplot(111), node_size=100, widths=1, arrows = True)
+        f.savefig("graph-" + str(i) + ".png", dpi=2000)
 
-draw_graph()
+#draw_graph()
 """
 for (a,b) in ls:
    if b != "":
