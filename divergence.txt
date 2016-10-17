@@ -1,0 +1,11 @@
+4
+The 0 radius divergence is 10
+['b', 'bA', 'bAB', 'bABa', 'ABaab', 'ABaa', 'BABaa', 'BABa', 'BAB', 'BA', 'B']
+The 1 radius divergence is 16
+['BB', 'BBa', 'BBaa', 'BBaab', 'BabABa', 'BabAB', 'BabA', 'Bab', 'Baba', 'Babab', 'BababA', 'BababAB', 'babABB', 'babAB', 'babA', 'bab', 'ba']
+The 2 radius divergence is 24
+['BBB', 'BBBA', 'BBBAA', 'BBBAAb', 'BBBAAba', 'BAAbaB', 'BAAba', 'AAba', 'bAAba', 'bAAbab', 'bbAAb', 'bbAA', 'bbA', 'bbAb', 'bbAbb', 'bbAbbB', 'bbAbbBB', 'bbbaAB', 'baaaAAA', 'baaaAAAB', 'abbbBBB', 'aaaaAA', 'aaaaA', 'aaaa', 'aaa']
+The 3 radius divergence is 32
+['AABB', 'AABBa', 'AABBab', 'AABBaba', 'AABBabaa', 'bAABBabaa', 'bAABBaba', 'bAABBab', 'bAABBa', 'bAABB', 'bAAB', 'bAABa', 'bAABaa', 'bAbABaa', 'bAbABaab', 'bAbbABa', 'bAbbAB', 'bAbbA', 'bAbbAb', 'bAbbAbB', 'bAbbaA', 'bAbaaAA', 'bAbaaA', 'bAbaaAB', 'bAbaaABA', 'bAbaaABAB', 'baBaaAAA', 'baBaaAAAB', 'aaBaaAAA', 'aaBaaAA', 'aaBaaA', 'aaBaa', 'aaBa']
+The 4 radius divergence is 46
+['aaBBa', 'aaBBaa', 'aaBBaab', 'aaBBaabA', 'aaBaaAbAB', 'aaBaaAbA', 'aaBaaAb', 'aaBaaA', 'aaBaaAB', 'aaBaaABb', 'aaBaaABba', 'aaaaAABa', 'aaaaAAB', 'aaaaAA', 'abbbBBB', 'baaaAAAB', 'baaaAAA', 'bbbaAB', 'bbAbbBB', 'bbAbbB', 'bbAbaAb', 'bbAbaA', 'bbAbAbB', 'bbAbAbBA', 'bbAbAbBAb', 'bbAbAAbb', 'bbAbAAb', 'bbAAAbab', 'bbAAAba', 'bbAAAb', 'bbAAAbb', 'bAAAbbab', 'bAAAbba', 'AAAbba', 'AAAbb', 'AAAbbA', 'AAAbbAA', 'AAAbbAAb', 'AAAAAbabb', 'AAAAAbab', 'AAAAAba', 'AAAAAbaB', 'AAABBAAba', 'AAABBAAb', 'AAABBAA', 'AAABBA', 'AAABB']

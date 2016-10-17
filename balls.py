@@ -205,7 +205,14 @@ def build_graph(num, graph = {}):
     	graph = {elem_to_str(iden):{"name": ""}}
     sz = 0
     while sz < num:
+        print(sz)
+        if len(graph.keys()) > num:
+            break
         for elem in graph.keys():
+            if len(graph.keys()) % 100 in [0,1,2,3,4,5,6]:
+                print(len(graph.keys()))
+                with open("graph.json", "w") as f:
+                    f.write(json.dumps(js))
             if 'a' not in graph[elem]:
                 sz += 1
                 elem_t = str_to_elem(elem)
@@ -219,22 +226,26 @@ def build_graph(num, graph = {}):
                 graph[elem]['b'] = elem_to_str(op(elem_t, str_to_elem(elem_to_str(B))))
                 elem_t = str_to_elem(elem)
                 graph[elem]['B'] = elem_to_str(op(elem_t, str_to_elem(elem_to_str(B_inv))))
-
+                if len(graph.keys()) > num:
+                    break
+		js[graph[elem]['name']] = {}
                 def handle_gen(gen):
 			if graph[elem][gen] not in graph:
 			    graph[graph[elem][gen]] = {'name': graph[elem]["name"] + gen}
-                if graph[elem]['a'] not in graph:
-                    graph[graph[elem]['a']] = {'name': graph[elem]["name"] + 'a'}
-                if graph[elem]['A'] not in graph:
-                    graph[graph[elem]['A']] = {'name': graph[elem]["name"] + 'A'}
-                if graph[elem]['B'] not in graph:
-                    graph[graph[elem]['B']] =  {'name': graph[elem]["name"] + 'B'}
-                if graph[elem]['b'] not in graph:
-                    graph[graph[elem]['b']] = {'name': graph[elem]["name"] + 'b'}
+
+                        js[graph[elem]['name']][gen] = graph[graph[elem][gen]]['name']
+
+                handle_gen('a')
+                handle_gen('b')
+                handle_gen('A')
+                handle_gen('B')
+    with open("graph.json", "w") as f:
+        f.write(json.dumps(js))
+    print("Final Size: " +  str(len(graph.keys())))
     return graph
 
 
-graph = build_graph(100)
+graph = build_graph(100000)
 j = 0
 grph2 = {}
 
@@ -257,36 +268,36 @@ for key in graph:
        dct_elem_to_num[name] = name
        i += 1
        G.add_node(dct_elem_to_num[name])
-       print(graph[key]["name"])
+#       print(graph[key]["name"])
 
+if False:
+	a_edges = []
+	b_edges = []
+	for key in graph:
+	   v = graph[key]
 
-a_edges = []
-b_edges = []
-for key in graph:
-   v = graph[key]
-
-   if 'a' in v:
-      rt = {"edges":[]}
-      j += 1
-      #print(v["name"])
-      name = v["name"]
-      print(name)
-      num = dct_elem_to_num[name]
-      for k in v:
-          if k != "name":
-              other_num = dct_elem_to_num[graph[v[k]]["name"]]
-              print((num, other_num))
-              G.add_edges_from([(num, other_num)])
-              if k == 'a' or k == 'A':
-                  a_edges.append((num, other_num))
-              else:
-                  b_edges.append((num, other_num))
-              rt["edges"].append(graph[v[k]]["name"])
-              rt[k] = graph[v[k]]["name"]
-              s  = str((k, graph[v[k]]["name"]))
-              #print("    " + s)
-   
-      grph2[v["name"]] = rt
+	   if 'a' in v:
+	      rt = {"edges":[]}
+	      j += 1
+	      #print(v["name"])
+	      name = v["name"]
+	      print(name)
+	      num = dct_elem_to_num[name]
+	      for k in v:
+		  if k != "name":
+		      other_num = dct_elem_to_num[graph[v[k]]["name"]]
+		      print((num, other_num))
+		      G.add_edges_from([(num, other_num)])
+		      if k == 'a' or k == 'A':
+			  a_edges.append((num, other_num))
+		      else:
+			  b_edges.append((num, other_num))
+		      rt["edges"].append(graph[v[k]]["name"])
+		      rt[k] = graph[v[k]]["name"]
+		      s  = str((k, graph[v[k]]["name"]))
+		      #print("    " + s)
+	   
+	      grph2[v["name"]] = rt
 
 
 def position_item(item):
