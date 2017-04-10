@@ -213,8 +213,14 @@ def build_graph(num, graph = {}):
                 print(len(graph.keys()))
                 with open("graph.json", "w") as f:
                     f.write(json.dumps(js))
+
+                with open("elements.json", "w") as f:
+                    f.write(json.dumps(graph))
             if 'a' not in graph[elem]:
                 sz += 1
+                if elem == "((1*1)*((1*1)*1))+(((1*1)*(1*1))*1)":
+                    print elem
+                    return [] 
                 elem_t = str_to_elem(elem)
                 # Bit of a mix up. The variable A is the generator a
                 #                               A_inv is the inverse of a
@@ -241,6 +247,8 @@ def build_graph(num, graph = {}):
                 handle_gen('B')
     with open("graph.json", "w") as f:
         f.write(json.dumps(js))
+    with open("elements.json", "w") as f:
+        f.write(json.dumps(graph))
     print("Final Size: " +  str(len(graph.keys())))
     return graph
 
